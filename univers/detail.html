@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <meta content="description" name="description">
+    <meta name="google" content="notranslate" />
+    <meta content="Mashup templates have been developped by Orson.io team" name="author">
+
+    <!-- Disable tap highlight on IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-icon-180x180.png">
+    <link href="./assets/favicon.ico" rel="icon">
+
+    <title>Basic</title>
+
+    <link href="./main.3f6952e4.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.2.0/styles/atom-one-light.min.css" rel="stylesheet">
+    <style>
+        .blog {
+            margin-left: 20%;
+            margin-right: 20%
+        }
+    </style>
+</head>
+
+<body>
+    <div id="site-border-left"></div>
+    <div id="site-border-right"></div>
+    <div id="site-border-top"></div>
+    <div id="site-border-bottom"></div>
+    <!-- Add your content of header -->
+    <header>
+        <nav class="navbar  navbar-fixed-top navbar-default">
+            <div class="container">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav ">
+                        <li><a href="./index.html" title="">01 : Home</a></li>
+                        <li><a href="./works.html" title="">02 : FE Blogs</a></li>
+                        <li><a href="./basic1.html?type=travel" title="">03 : Travel</a></li>
+                        <li><a href="./basic1.html?type=reading" title="">04 : Reading</a></li>
+                        <li><a href="./about.html" title="">05 : About Me</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="section-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2 section-container-spacer">
+                    <div class="text-center" id="blog-header">
+
+                    </div>
+                </div>
+            </div>
+            <div id="blog">
+
+            </div>
+        </div>
+    </div>
+    <script src="./jquery.js"></script>
+    <script src="./moment.js"></script>
+    <script src="./zh-cn.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/marked/2.1.3/marked.min.js"></script>
+    <script>
+        var renderMd = new marked.Renderer();
+        marked.setOptions({
+            renderer: renderMd,
+            gfm: true,
+            tables: true,
+            breaks: true,
+            pedantic: false,
+            sanitize: false,
+            smartLists: true,
+            smartypants: true,
+            highlight: function (code) {
+                return hljs.highlightAuto(code).value;
+            }
+        });//基本设置
+        // 发送 get 请求
+        function get(url) {
+            return $.get(url)
+        }
+        // 获取 url 参数
+        function getUrlParams() {
+            let paramStr = location.href.split('?')[1] || ''
+            paramStr = paramStr.split('#')[0]
+            const result = {}
+            paramStr.split('&').forEach(itemStr => {
+                const arr = itemStr.split('=')
+                const key = arr[0]
+                const val = arr[1]
+                result[key] = val
+            })
+            return result
+        }
+        const $header = $('#blog-header')
+        const $content = $('#blog')
+        const urlParams = getUrlParams()
+        const url = '/api/blog/detail?id=' + urlParams.id
+        get(url).then(res => {
+            if (res.errno !== 0) {
+                alert('数据错误')
+                return
+            }
+            const data = res.data || {}
+            $header.append($(`
+            <h1 class="h2">${data.title}</h1>
+                        <p>${data.discription}</p>
+            `))
+            $content.append(marked(data.content));
+        })
+    </script>
+    <script type="text/javascript" src="./main.70a66962.js"></script>
+</body>
+
+</html>

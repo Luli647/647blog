@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <meta content="description" name="description">
+    <meta name="google" content="notranslate" />
+    <meta content="Mashup templates have been developped by Orson.io team" name="author">
+
+    <!-- Disable tap highlight on IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-icon-180x180.png">
+    <link href="./assets/favicon.ico" rel="icon">
+
+    <title>Title page</title>
+    <link href="./main.3f6952e4.css" rel="stylesheet">
+    <style>
+        .wthree-field {
+            margin-bottom: 14px;
+        }
+
+        .wthree-field input {
+            padding: 14px 30px;
+            font-size: 16px;
+            color: #999;
+            letter-spacing: 0.5px;
+            border: 1px solid #e1e1e1;
+            background: #fff;
+            box-sizing: border-box;
+            font-family: 'Noto Sans JP', sans-serif;
+            width: 100%;
+            border-radius: 35px;
+            -webkit-border-radius: 35px;
+            -moz-border-radius: 35px;
+            -ms-border-radius: 35px;
+            -o-border-radius: 35px;
+        }
+
+        .login-form {
+            margin-left: 20%;
+            margin-right: 20%;
+            margin-top: 18%;
+        }
+
+        .wthree-field button.btn {
+            background: #000000;
+            border: none;
+            color: #fff;
+            padding: 14px 14px;
+            text-transform: uppercase;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 16px;
+            width: 100%;
+            letter-spacing: 1px;
+            outline: none;
+            cursor: pointer;
+            transition: 0.5s all;
+            -webkit-transition: 0.5s all;
+            -moz-transition: 0.5s all;
+            -o-transition: 0.5s all;
+            -ms-transition: 0.5s all;
+            border-radius: 35px;
+            -webkit-border-radius: 35px;
+            -moz-border-radius: 35px;
+            -ms-border-radius: 35px;
+            -o-border-radius: 35px;
+
+        }
+    </style>
+</head>
+
+<body class="minimal">
+    <div id="site-border-left"></div>
+    <div id="site-border-right"></div>
+    <div id="site-border-top"></div>
+    <div id="site-border-bottom"></div>
+    <!-- Add your content of header -->
+    <header>
+        <nav class="navbar  navbar-fixed-top navbar-inverse">
+            <div class="container">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav ">
+                        <li><a href="./index.html" title="">01 : Home</a></li>
+                        <li><a href="./works.html" title="">02 : FE Blogs</a></li>
+                        <li><a href="./basic1.html?type=travel" title="">03 : Travel</a></li>
+                        <li><a href="./basic1.html?type=reading" title="">04 : Reading</a></li>
+                        <li><a href="./about.html" title="">05 : About Me</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="hero-full-container background-image-container white-text-container"
+        style="background-image: url('./assets/images/chainsawman2.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="hero-full-wrapper">
+                        <div class="text-content" id="logim">
+                            <form action="#" method="post" class="login-form">
+                                <div class="wthree-field">
+                                    <input class=" form-name" name="text1" id="username" type="text" value=""
+                                        placeholder="Username" required>
+                                </div>
+                                <div class="wthree-field">
+                                    <input name="password" class="form-password" id="password" type="Password"
+                                        placeholder="Password">
+                                </div>
+                                <div class="wthree-field btn-wrapper">
+                                    <button type="text" class="btn" id="login-button">login
+                                        In</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./jquery.js"></script>
+    <script>
+        // 发送 post 请求
+        function post(url, data = {}) {
+            return $.ajax({
+                type: 'post',
+                url,
+                data: JSON.stringify(data),
+                contentType: "application/json",
+            })
+        }
+
+        $('#login-button').click(() => {
+            const username = $('#username').val()
+            const password = $('#password').val()
+            const url = '/api/user/login'
+            const data = {
+                username,
+                password
+            }
+            const xhrFields= {
+                withCredentials: true
+            }
+            post(url, data,xhrFields).then(res => {
+                if (res.errno === 0) {
+                    // 登录成功
+                    location.href = './admin.html'
+                } else {
+                    // 登录失败
+                    alert(res.message)
+                }
+            })
+        })
+    </script>
+    <script type="text/javascript" src="./main.70a66962.js"></script>
+</body>
+
+</html>

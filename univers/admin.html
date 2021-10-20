@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <meta content="description" name="description">
+    <meta name="google" content="notranslate" />
+    <meta content="Mashup templates have been developped by Orson.io team" name="author">
+
+    <!-- Disable tap highlight on IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-icon-180x180.png">
+    <link href="./assets/favicon.ico" rel="icon">
+
+    <title>Basic</title>
+    <link href="./main.3f6952e4.css" rel="stylesheet">
+    <style>
+        .form-control {
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .upload-area {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="site-border-left"></div>
+    <div id="site-border-right"></div>
+    <div id="site-border-top"></div>
+    <div id="site-border-bottom"></div>
+    <!-- Add your content of header -->
+    <header>
+        <nav class="navbar  navbar-fixed-top navbar-default">
+            <div class="container">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav ">
+                        <li><a href="./index.html" title="">01 : Home</a></li>
+                        <li><a href="./works.html" title="">02 : FE Blogs</a></li>
+                        <li><a href="./basic1.html?type=travel" title="">03 : Travel</a></li>
+                        <li><a href="./basic1.html?type=reading" title="">04 : Reading</a></li>
+                        <li><a href="./about.html" title="">05 : About Me</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="section-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2 section-container-spacer">
+                    <div class="search">
+
+                    </div>
+                </div>
+            </div>
+            <div class="upload" id="myForm" name="myForm">
+                <h3>上传文件</h3>
+                <input type="file" name="file" id="file" class="upload-area">
+                <div class="upload-type">
+                    <span>请输入博客标题</span>
+                    <input type="text" id="title" class="form-control" placeholder="请输入博客标题">
+                    <span>请输入创建时间</span>
+                    <input type="text" id="createtime" class="form-control" placeholder="创建时间">
+                    <span>请选择上传的文章类型</span>
+                    <select class="form-control" name="type" id="blog-type">
+                        <option>basic</option>
+                        <option>frame</option>
+                        <option>other</option>
+                        <option>travel</option>
+                        <option>reading</option>
+                    </select>
+                    <span>请输入文章描述</span>
+                    <textarea name="discription" id="blog-description" class="form-control" rows="3"
+                        placeholder="输入文章描述"></textarea>
+                </div>
+                <button class="btn btn-default" id="upload-btn">点击上传</button>
+            </div>
+            <hr />
+            <div id="blog">
+                <h3>博客列表</h3>
+                <div id="blog-list">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./jquery.js"></script>
+    <script>
+        const btn = document.getElementById('upload-btn')
+        const type = document.getElementById('blog-type')
+        const discription = document.getElementById('blog-description');
+        const title = document.getElementById('title')
+        const createtime = document.getElementById('createtime')
+        btn.onclick = function () {
+            const file = document.getElementById("file").files[0];
+            console.log(type.value)
+            console.log(discription.value)
+            let xhr = new XMLHttpRequest();
+            xhr.open('post', '/api/blog/new', true);
+            let form = new FormData()
+            form.append('content', file);
+            form.append('type', type.value);
+            form.append('discription', discription.value)
+            form.append('title', title.value);
+            form.append('createtime', createtime.value)
+            xhr.send(form);
+            if(xhr.responseText.errno===0){  
+                location.reload()
+            }else{
+                alert("需要登录！")
+                location.href='./index.html'
+            }
+            
+        }
+
+        const blogs = document.getElementById('blog-list');
+        let url = 'api/blog/list'
+        function get(url) {
+            return $.get(url)
+        }
+
+        const $container = $('#blog-list')
+
+        get(url).then((res) => {
+            if (res.errno != 0) {
+                alert('出现错误')
+                return
+            }
+            const data = res.data || []
+            data.forEach(item => {
+                $container.append($(`
+                    <div class="blog-item">
+                        <h5 class="title"><a style="color: black" href="/detail.html?id=${item.id} target="_blank">${item.title}</a></h5>
+                        <div class="info-wrapper">
+                            <span>${item.discription}</span>
+                            <a data-id="${item.id}" style="float: right" class="item-del btn-default btn">删除博客</a>
+                        </div>
+                        <hr />
+                    </div>
+                `))
+            })
+        })
+        //post请求
+        function post(url, data = {}) {
+            return $.ajax({
+                type: 'post',
+                url,
+                data: JSON.stringify(data),
+                contentType: "application/json",
+            })
+        }
+        $container.click(e => {
+            const $target = $(e.target)
+            if ($target.hasClass('item-del') === false) {
+                return
+            }
+            if (confirm('确认删除？')) {
+                const url = '/api/blog/del?id=' + $target.attr('data-id')
+                get(url).then(res => {
+                    if (res.errno !== 0) {
+                        alert('出现错误')
+                        return
+                    }
+                    location.reload()
+                })
+            }
+        })
+    </script>
+    <script type="text/javascript" src="./main.70a66962.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <meta content="description" name="description">
+    <meta name="google" content="notranslate" />
+    <meta content="Mashup templates have been developped by Orson.io team" name="author">
+
+    <!-- Disable tap highlight on IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-icon-180x180.png">
+    <link href="./assets/favicon.ico" rel="icon">
+
+    <title>Basic</title>
+
+    <link href="./main.3f6952e4.css" rel="stylesheet">
+    <style>
+        .blogs {
+            margin-left: 20%;
+            margin-right: 20%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="site-border-left"></div>
+    <div id="site-border-right"></div>
+    <div id="site-border-top"></div>
+    <div id="site-border-bottom"></div>
+    <!-- Add your content of header -->
+    <header>
+        <nav class="navbar  navbar-fixed-top navbar-default">
+            <div class="container">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav ">
+                        <li><a href="./index.html" title="">01 : Home</a></li>
+                        <li><a href="./works.html" title="">02 : FE Blogs</a></li>
+                        <li><a href="./basic1.html?type=travel" title="">03 : Travel</a></li>
+                        <li><a href="./basic1.html?type=reading" title="">04 : Reading</a></li>
+                        <li><a href="./about.html" title="">05 : About Me</a></li>
+                    </ul>
+
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="section-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2 section-container-spacer">
+                    <div class="text-center">
+                        <h1 class="h2">MyBlog</h1>
+                        <p>Some people can read War and Peace and come away thinking it's a simple adventure story.
+                            Others can read the ingredients on the back of a chewing-gum wrapper, and unlock the secrets
+                            of the universe.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="blogs">
+
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="footer-container text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <p>© K's website | contact me: liukristen950@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="./jquery.js"></script>
+    <script src="./moment.js"></script>
+    <script src="./zh-cn.js"></script>
+    <script>
+        function get(url) {
+            return $.get(url)
+        }
+        // 获取 url 参数
+        function getUrlParams() {
+            let paramStr = location.href.split('?')[1] || ''
+            paramStr = paramStr.split('#')[0]
+            const result = {}
+            paramStr.split('&').forEach(itemStr => {
+                const arr = itemStr.split('=')
+                const key = arr[0]
+                const val = arr[1]
+                result[key] = val
+            })
+            return result
+        }
+        let url = 'api/blog/list'
+        const urlParams = getUrlParams();
+        if (urlParams.type) {
+            url += '?type=' + urlParams.type
+        }
+        const $container = $('#blogs')
+        //加载博客列表
+        get(url).then((res) => {
+            if (res.errno !== 0) {
+                alert('出现错误')
+                return
+            }
+            console.log("博客")
+            //遍历博客列表并显示
+            const data = res.data || []
+            data.forEach(item => {
+                $container.append($(`
+                    <div class="blog-item">
+                        <h5 class="title"><a style="color: black" href="/detail.html?id=${item.id} target="_blank">${item.title}</a></h5>
+                        <div class="info-wrapper">
+                            <span>${item.discription}</span>
+                            <span style="float: right">${item.createtime}</span>
+                        </div>
+                        <hr />
+                    </div>
+                `))
+            })
+        })
+    </script>
+    <script type="text/javascript" src="./main.70a66962.js"></script>
+</body>
+
+</html>
